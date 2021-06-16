@@ -4,15 +4,18 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Random;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import resourceloader.ResourceLoader;
@@ -20,111 +23,111 @@ import resourceloader.ResourceLoader;
 public class Game implements ActionListener, MouseListener {
 
     JFrame frame = new JFrame("Tic-Tac-Toe");
+
     JButton[] button = new JButton[9];
+
     JButton resetButton = new JButton("Reset");
+
     ImageIcon O = new ImageIcon(ResourceLoader.load("res/O.png"));
+
     ImageIcon X = new ImageIcon(ResourceLoader.load("res/X.png"));
+
     JPanel gamePanel = new JPanel(new GridLayout(3, 3));
+
     JLabel winLabel = new JLabel();
+
     JButton[] diffButton = new JButton[3];
+
     JPanel diffPanel = new JPanel(new FlowLayout());
 
-    boolean ai = false, playable = true;
-    int difficulty=2;
+    boolean ai = false;
+
+    boolean playable = true;
+
+    int difficulty = 2;
 
     Game() {
-        frame.setLocation(400, 100);
-        frame.setSize(500, 600);
-        frame.setDefaultCloseOperation(3);
-        frame.setLayout(null);
-        frame.setResizable(false);
-        
-        winLabel.setBounds(165, 90, 200, 20);
-        winLabel.setForeground(Color.red);
-        winLabel.setFont(new Font("Arial", Font.BOLD, 25));
-
-        gamePanel.setBounds(45, 65 + 55, 400, 360);
-
-        for (int i = 0; i < button.length; i++) {
-            button[i] = new JButton();
-            button[i].setBackground(null);
-            button[i].setForeground(Color.black);
-            button[i].setFocusable(false);
-            button[i].addActionListener(this);
-            button[i].addMouseListener(this);
-            gamePanel.add(button[i]);
+        this.frame.setLocation(400, 100);
+        this.frame.setSize(500, 600);
+        this.frame.setDefaultCloseOperation(3);
+        this.frame.setLayout((LayoutManager) null);
+        this.frame.setResizable(false);
+        this.winLabel.setBounds(165, 90, 200, 20);
+        this.winLabel.setForeground(Color.red);
+        this.winLabel.setFont(new Font("Arial", 1, 25));
+        this.gamePanel.setBounds(45, 120, 400, 360);
+        int i;
+        for (i = 0; i < this.button.length; i++) {
+            this.button[i] = new JButton();
+            this.button[i].setBackground((Color) null);
+            this.button[i].setForeground(Color.black);
+            this.button[i].setFocusable(false);
+            this.button[i].addActionListener(this);
+            this.button[i].addMouseListener(this);
+            this.gamePanel.add(this.button[i]);
         }
-
-        diffPanel.setBounds(95, 45, 300, 40);
-
-        for (int i = 0; i < diffButton.length; i++) {
-            diffButton[i] = new JButton();
-            diffButton[i].setFocusable(false);
-            diffButton[i].setFont(new Font("Ink free", Font.BOLD, 15));
-            diffButton[i].setBackground(null);
-            diffButton[i].setForeground(Color.black);
-            diffButton[i].addActionListener(this);
-            diffButton[i].addMouseListener(this);
-            diffPanel.add(diffButton[i]);
+        this.diffPanel.setBounds(95, 45, 300, 40);
+        for (i = 0; i < this.diffButton.length; i++) {
+            this.diffButton[i] = new JButton();
+            this.diffButton[i].setFocusable(false);
+            this.diffButton[i].setFont(new Font("Arial", 1, 15));
+            this.diffButton[i].setBackground((Color) null);
+            this.diffButton[i].setForeground(Color.black);
+            this.diffButton[i].addActionListener(this);
+            this.diffButton[i].addMouseListener(this);
+            this.diffPanel.add(this.diffButton[i]);
         }
-
-        diffButton[0].setText("Easy");
-        diffButton[1].setText("Medium");
-        diffButton[2].setText("Hard");
-        diffButton[2].setBackground(Color.cyan);
-        diffButton[2].setForeground(Color.black);
-
-        resetButton.setBounds(145, 500, 200, 50);
-        resetButton.setFocusable(false);
-        resetButton.setFont(new Font("Ink Free", Font.BOLD, 25));
-        resetButton.setForeground(Color.black);
-        resetButton.addActionListener(this);
-        resetButton.addMouseListener(this);
-
-        frame.add(diffPanel);
-        frame.add(resetButton);
-        frame.add(gamePanel);
-        frame.add(winLabel);
-
+        this.diffButton[0].setText("Easy");
+        this.diffButton[1].setText("Medium");
+        this.diffButton[2].setText("Hard");
+        this.diffButton[2].setBackground(Color.cyan);
+        this.diffButton[2].setForeground(Color.black);
+        this.resetButton.setBounds(145, 500, 200, 50);
+        this.resetButton.setFocusable(false);
+        this.resetButton.setFont(new Font("Arial", 1, 25));
+        this.resetButton.setForeground(Color.black);
+        this.resetButton.addActionListener(this);
+        this.resetButton.addMouseListener(this);
+        this.frame.add(this.diffPanel);
+        this.frame.add(this.resetButton);
+        this.frame.add(this.gamePanel);
+        this.frame.add(this.winLabel);
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-        } catch (Exception ex) {
-
+        } catch (Exception exception) {
         }
-
-        frame.setVisible(true);
-
+        this.frame.setVisible(true);
         nextTurn();
     }
 
     void nextTurn() {
-        int turn = new Random().nextInt(2);
+        int turn = (new Random()).nextInt(2);
         if (turn == 0) {
             computerMove();
         } else {
-            ai = false;
+            this.ai = false;
         }
     }
-    
-    void computerMove(){
-        ai = true;
-        if(difficulty==0){
+
+    void computerMove() {
+        this.ai = true;
+        if (this.difficulty == 0) {
             easyCPU();
-        }else if(difficulty==1){
+        } else if (this.difficulty == 1) {
             mediumCPU();
-        }else{
+        } else {
             computer();
         }
     }
 
     void computer() {
-        if (playable) {
-            int score, bestMove = 4, bestScore = Integer.MAX_VALUE;
-            for (int i = 0; i < button.length; i++) {
+        if (this.playable) {
+            int bestMove = 4, bestScore = Integer.MAX_VALUE;
+            for (int i = 0; i < this.button.length; i++) {
                 if (isAvailable(i)) {
-                    button[i].setIcon(X);
-                    score = minimax(false);
-                    button[i].setIcon(null);
+                    this.button[i].setIcon(this.X);
+                    int score = minimax(false);
+                    this.button[i].setIcon((Icon) null);
                     if (score < bestScore) {
                         bestScore = score;
                         bestMove = i;
@@ -134,56 +137,57 @@ public class Game implements ActionListener, MouseListener {
                     }
                 }
             }
-            button[bestMove].setIcon(X);
-            ai = false;
+            this.button[bestMove].setIcon(this.X);
+            this.ai = false;
             checkWinner();
         }
     }
-    
-    void easyCPU(){
-        if(playable&&ai){
-            while(ai){
-                int move=new Random().nextInt(9);
-                if(isAvailable(move)){
-                    button[move].setIcon(X);
-                    ai=false;
+
+    void easyCPU() {
+        if (this.playable && this.ai) {
+            while (this.ai) {
+                int move = (new Random()).nextInt(9);
+                if (isAvailable(move)) {
+                    this.button[move].setIcon(this.X);
+                    this.ai = false;
                     checkWinner();
                 }
             }
         }
     }
-    
+
     void mediumCPU() {
-        if (playable && ai) {
-            for (int i = 0; i < button.length; i++) {
+        if (this.playable && this.ai) {
+            int i;
+            for (i = 0; i < this.button.length; i++) {
                 if (isAvailable(i)) {
-                    button[i].setIcon(X);
+                    this.button[i].setIcon(this.X);
                     if (computerWinCondition()) {
-                        ai = false;
+                        this.ai = false;
                         checkWinner();
                         break;
                     }
-                    button[i].setIcon(null);
+                    this.button[i].setIcon((Icon) null);
                 }
             }
-            if (ai) {
-                for (int i = 0; i < button.length; i++) {
+            if (this.ai) {
+                for (i = 0; i < this.button.length; i++) {
                     if (isAvailable(i)) {
-                        button[i].setIcon(X);
+                        this.button[i].setIcon(this.X);
                         if (!pseudoHuman()) {
-                            ai = false;
+                            this.ai = false;
                             checkWinner();
                             break;
                         }
-                        button[i].setIcon(null);
+                        this.button[i].setIcon((Icon) null);
                     }
                 }
             }
-            while (ai) {
-                int move = new Random().nextInt(9);
+            while (this.ai) {
+                int move = (new Random()).nextInt(9);
                 if (isAvailable(move)) {
-                    button[move].setIcon(X);
-                    ai = false;
+                    this.button[move].setIcon(this.X);
+                    this.ai = false;
                     checkWinner();
                     break;
                 }
@@ -192,65 +196,77 @@ public class Game implements ActionListener, MouseListener {
     }
 
     boolean pseudoHuman() {
-        for (int i = 0; i < button.length; i++) {
+        for (int i = 0; i < this.button.length; i++) {
             if (isAvailable(i)) {
-                button[i].setIcon(O);
+                this.button[i].setIcon(this.O);
                 if (humanWinCondition()) {
-                    button[i].setIcon(null);
+                    this.button[i].setIcon((Icon) null);
                     return true;
                 }
-                button[i].setIcon(null);
+                this.button[i].setIcon((Icon) null);
             }
         }
         return false;
     }
 
     boolean computerWinCondition() {
-        if (button[0].getIcon() == button[1].getIcon() && button[1].getIcon() == button[2].getIcon() && button[0].getIcon() == X) {
+        if (this.button[0].getIcon() == this.button[1].getIcon() && this.button[1].getIcon() == this.button[2].getIcon() && this.button[0].getIcon() == this.X) {
             return true;
-        } else if (button[3].getIcon() == button[4].getIcon() && button[4].getIcon() == button[5].getIcon() && button[3].getIcon() == X) {
-            return true;
-        } else if (button[6].getIcon() == button[7].getIcon() && button[7].getIcon() == button[8].getIcon() && button[6].getIcon() == X) {
-            return true;
-        } else if (button[0].getIcon() == button[3].getIcon() && button[3].getIcon() == button[6].getIcon() && button[0].getIcon() == X) {
-            return true;
-        } else if (button[1].getIcon() == button[4].getIcon() && button[4].getIcon() == button[7].getIcon() && button[1].getIcon() == X) {
-            return true;
-        } else if (button[2].getIcon() == button[5].getIcon() && button[5].getIcon() == button[8].getIcon() && button[2].getIcon() == X) {
-            return true;
-        } else if (button[0].getIcon() == button[4].getIcon() && button[4].getIcon() == button[8].getIcon() && button[0].getIcon() == X) {
-            return true;
-        } else if (button[2].getIcon() == button[4].getIcon() && button[4].getIcon() == button[6].getIcon() && button[2].getIcon() == X) {
-            return true;
-        } else {
-            return false;
         }
+        if (this.button[3].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[5].getIcon() && this.button[3].getIcon() == this.X) {
+            return true;
+        }
+        if (this.button[6].getIcon() == this.button[7].getIcon() && this.button[7].getIcon() == this.button[8].getIcon() && this.button[6].getIcon() == this.X) {
+            return true;
+        }
+        if (this.button[0].getIcon() == this.button[3].getIcon() && this.button[3].getIcon() == this.button[6].getIcon() && this.button[0].getIcon() == this.X) {
+            return true;
+        }
+        if (this.button[1].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[7].getIcon() && this.button[1].getIcon() == this.X) {
+            return true;
+        }
+        if (this.button[2].getIcon() == this.button[5].getIcon() && this.button[5].getIcon() == this.button[8].getIcon() && this.button[2].getIcon() == this.X) {
+            return true;
+        }
+        if (this.button[0].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[8].getIcon() && this.button[0].getIcon() == this.X) {
+            return true;
+        }
+        if (this.button[2].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[6].getIcon() && this.button[2].getIcon() == this.X) {
+            return true;
+        }
+        return false;
     }
 
     boolean humanWinCondition() {
-        if (button[0].getIcon() == button[1].getIcon() && button[1].getIcon() == button[2].getIcon() && button[0].getIcon() == O) {
+        if (this.button[0].getIcon() == this.button[1].getIcon() && this.button[1].getIcon() == this.button[2].getIcon() && this.button[0].getIcon() == this.O) {
             return true;
-        } else if (button[3].getIcon() == button[4].getIcon() && button[4].getIcon() == button[5].getIcon() && button[3].getIcon() == O) {
-            return true;
-        } else if (button[6].getIcon() == button[7].getIcon() && button[7].getIcon() == button[8].getIcon() && button[6].getIcon() == O) {
-            return true;
-        } else if (button[0].getIcon() == button[3].getIcon() && button[3].getIcon() == button[6].getIcon() && button[0].getIcon() == O) {
-            return true;
-        } else if (button[1].getIcon() == button[4].getIcon() && button[4].getIcon() == button[7].getIcon() && button[1].getIcon() == O) {
-            return true;
-        } else if (button[2].getIcon() == button[5].getIcon() && button[5].getIcon() == button[8].getIcon() && button[2].getIcon() == O) {
-            return true;
-        } else if (button[0].getIcon() == button[4].getIcon() && button[4].getIcon() == button[8].getIcon() && button[0].getIcon() == O) {
-            return true;
-        } else if (button[2].getIcon() == button[4].getIcon() && button[4].getIcon() == button[6].getIcon() && button[2].getIcon() == O) {
-            return true;
-        } else {
-            return false;
         }
+        if (this.button[3].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[5].getIcon() && this.button[3].getIcon() == this.O) {
+            return true;
+        }
+        if (this.button[6].getIcon() == this.button[7].getIcon() && this.button[7].getIcon() == this.button[8].getIcon() && this.button[6].getIcon() == this.O) {
+            return true;
+        }
+        if (this.button[0].getIcon() == this.button[3].getIcon() && this.button[3].getIcon() == this.button[6].getIcon() && this.button[0].getIcon() == this.O) {
+            return true;
+        }
+        if (this.button[1].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[7].getIcon() && this.button[1].getIcon() == this.O) {
+            return true;
+        }
+        if (this.button[2].getIcon() == this.button[5].getIcon() && this.button[5].getIcon() == this.button[8].getIcon() && this.button[2].getIcon() == this.O) {
+            return true;
+        }
+        if (this.button[0].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[8].getIcon() && this.button[0].getIcon() == this.O) {
+            return true;
+        }
+        if (this.button[2].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[6].getIcon() && this.button[2].getIcon() == this.O) {
+            return true;
+        }
+        return false;
     }
 
     boolean pseudoisDraw() {
-        for (int i = 0; i < button.length; i++) {
+        for (int i = 0; i < this.button.length; i++) {
             if (isAvailable(i)) {
                 return false;
             }
@@ -261,199 +277,202 @@ public class Game implements ActionListener, MouseListener {
     int minimax(boolean isMinimizing) {
         if (computerWinCondition()) {
             return -1;
-        } else if (humanWinCondition()) {
+        }
+        if (humanWinCondition()) {
             return 1;
-        } else if (pseudoisDraw()) {
+        }
+        if (pseudoisDraw()) {
             return 0;
         }
         if (isMinimizing) {
-            int score, bestScore = Integer.MAX_VALUE;
-            for (int i = 0; i < button.length; i++) {
-                if (isAvailable(i)) {
-                    button[i].setIcon(X);
-                    score = minimax(false);
-                    button[i].setIcon(null);
+            int j = Integer.MAX_VALUE;
+            for (int k = 0; k < this.button.length; k++) {
+                if (isAvailable(k)) {
+                    this.button[k].setIcon(this.X);
+                    int score = minimax(false);
+                    this.button[k].setIcon((Icon) null);
                     if (score == -1) {
                         return score;
                     }
-                    bestScore = Math.min(score, bestScore);
+                    j = Math.min(score, j);
                 }
             }
-            return bestScore;
-        } else {
-            int score, bestScore = Integer.MIN_VALUE;
-            for (int i = 0; i < button.length; i++) {
-                if (isAvailable(i)) {
-                    button[i].setIcon(O);
-                    score = minimax(true);
-                    button[i].setIcon(null);
-                    if (score == 1) {
-                        return score;
-                    }
-                    bestScore = Math.max(score, bestScore);
-                }
-            }
-            return bestScore;
+            return j;
         }
+        int bestScore = Integer.MIN_VALUE;
+        for (int i = 0; i < this.button.length; i++) {
+            if (isAvailable(i)) {
+                this.button[i].setIcon(this.O);
+                int score = minimax(true);
+                this.button[i].setIcon((Icon) null);
+                if (score == 1) {
+                    return score;
+                }
+                bestScore = Math.max(score, bestScore);
+            }
+        }
+        return bestScore;
     }
 
     boolean checkWinner() {
-        if (button[0].getIcon() == button[1].getIcon() && button[1].getIcon() == button[2].getIcon() && button[0].getIcon() != null) {
+        if (this.button[0].getIcon() == this.button[1].getIcon() && this.button[1].getIcon() == this.button[2].getIcon() && this.button[0].getIcon() != null) {
             endGame(0, 1, 2);
             return true;
-        } else if (button[3].getIcon() == button[4].getIcon() && button[4].getIcon() == button[5].getIcon() && button[3].getIcon() != null) {
+        }
+        if (this.button[3].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[5].getIcon() && this.button[3].getIcon() != null) {
             endGame(3, 4, 5);
             return true;
-        } else if (button[6].getIcon() == button[7].getIcon() && button[7].getIcon() == button[8].getIcon() && button[6].getIcon() != null) {
+        }
+        if (this.button[6].getIcon() == this.button[7].getIcon() && this.button[7].getIcon() == this.button[8].getIcon() && this.button[6].getIcon() != null) {
             endGame(6, 7, 8);
             return true;
-        } else if (button[0].getIcon() == button[3].getIcon() && button[3].getIcon() == button[6].getIcon() && button[0].getIcon() != null) {
+        }
+        if (this.button[0].getIcon() == this.button[3].getIcon() && this.button[3].getIcon() == this.button[6].getIcon() && this.button[0].getIcon() != null) {
             endGame(0, 3, 6);
             return true;
-        } else if (button[1].getIcon() == button[4].getIcon() && button[4].getIcon() == button[7].getIcon() && button[1].getIcon() != null) {
+        }
+        if (this.button[1].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[7].getIcon() && this.button[1].getIcon() != null) {
             endGame(1, 4, 7);
             return true;
-        } else if (button[2].getIcon() == button[5].getIcon() && button[5].getIcon() == button[8].getIcon() && button[2].getIcon() != null) {
+        }
+        if (this.button[2].getIcon() == this.button[5].getIcon() && this.button[5].getIcon() == this.button[8].getIcon() && this.button[2].getIcon() != null) {
             endGame(2, 5, 8);
             return true;
-        } else if (button[0].getIcon() == button[4].getIcon() && button[4].getIcon() == button[8].getIcon() && button[0].getIcon() != null) {
+        }
+        if (this.button[0].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[8].getIcon() && this.button[0].getIcon() != null) {
             endGame(0, 4, 8);
             return true;
-        } else if (button[2].getIcon() == button[4].getIcon() && button[4].getIcon() == button[6].getIcon() && button[2].getIcon() != null) {
+        }
+        if (this.button[2].getIcon() == this.button[4].getIcon() && this.button[4].getIcon() == this.button[6].getIcon() && this.button[2].getIcon() != null) {
             endGame(2, 4, 6);
             return true;
-        } else {
-            return isDraw();
         }
+        return isDraw();
     }
 
     void endGame(int x, int y, int z) {
-        button[x].setBackground(Color.green);
-        button[y].setBackground(Color.green);
-        button[z].setBackground(Color.green);
-        winLabel.setForeground(Color.red);
-        playable = false;
-        if (button[x].getIcon() == O) {
-            winLabel.setText("Human won!");
+        this.button[x].setBackground(Color.green);
+        this.button[y].setBackground(Color.green);
+        this.button[z].setBackground(Color.green);
+        this.winLabel.setForeground(Color.red);
+        this.playable = false;
+        if (this.button[x].getIcon() == this.O) {
+            this.winLabel.setText("Human won!");
         } else {
-            winLabel.setText("Computer won!");
+            this.winLabel.setText("Computer won!");
         }
     }
 
     boolean isAvailable(int i) {
-        if (button[i].getIcon() == null) {
+        if (this.button[i].getIcon() == null) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     boolean isDraw() {
-        for (int i = 0; i < button.length; i++) {
+        for (int i = 0; i < this.button.length; i++) {
             if (isAvailable(i)) {
                 return false;
             }
         }
-        playable = false;
-        winLabel.setLocation(220, winLabel.getY());
-        winLabel.setText("Tie!");
-        winLabel.setForeground(Color.red);
+        this.playable = false;
+        this.winLabel.setLocation(220, this.winLabel.getY());
+        this.winLabel.setText("Tie!");
+        this.winLabel.setForeground(Color.red);
         return true;
     }
 
-    @Override
+    void resetGame() {
+        for (int i = 0; i < this.button.length; i++) {
+            this.button[i].setIcon((Icon) null);
+            this.button[i].setBackground((Color) null);
+        }
+        this.winLabel.setLocation(170, this.winLabel.getY());
+        this.winLabel.setForeground(new Color(238, 238, 238));
+        this.playable = true;
+        nextTurn();
+    }
+
     public void actionPerformed(ActionEvent e) {
-        for (int i = 0; i < button.length; i++) {
-            if (e.getSource() == button[i]) {
-                if (playable && !ai && isAvailable(i)) {
-                    button[i].setIcon(O);
-                    if (!checkWinner()) {
-                        computerMove();
-                    }
+        int i;
+        for (i = 0; i < this.button.length; i++) {
+            if (e.getSource() == this.button[i]
+                    && this.playable && !this.ai && isAvailable(i)) {
+                this.button[i].setIcon(this.O);
+                if (!checkWinner()) {
+                    computerMove();
                 }
             }
         }
-
-        if (e.getSource() == resetButton) {
-            for (int i = 0; i < button.length; i++) {
-                button[i].setIcon(null);
-                button[i].setBackground(null);
+        if (e.getSource() == this.resetButton) {
+            resetGame();
+        }
+        for (i = 0; i < this.diffButton.length; i++) {
+            if (e.getSource() == this.diffButton[i] && i != this.difficulty) {
+                int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to change game difficulty? It will reset\nthe current game state. Click \"Yes\" to continue or \"No\" to cancel.", "Confirmation", 0);
+                if (confirm == 0) {
+                    this.difficulty = i;
+                    this.diffButton[i].setBackground(Color.cyan);
+                    this.diffButton[i].setForeground(Color.black);
+                    resetGame();
+                }
             }
-            winLabel.setLocation(170, winLabel.getY());
-            winLabel.setForeground(new Color(238, 238, 238));
-            playable = true;
-            nextTurn();
         }
-        for (int i = 0; i < diffButton.length; i++) {
-            if(e.getSource()==diffButton[i]&&i!=difficulty){
-                difficulty=i;
-                diffButton[i].setBackground(Color.cyan);
-                diffButton[i].setForeground(Color.black);
-            }            
-        }
-        
-        for (int i = 0; i < diffButton.length; i++) {
-            if(i!=difficulty){
-                diffButton[i].setBackground(null);
-                diffButton[i].setForeground(Color.black);
+        for (i = 0; i < this.diffButton.length; i++) {
+            if (i != this.difficulty) {
+                this.diffButton[i].setBackground((Color) null);
+                this.diffButton[i].setForeground(Color.black);
             }
         }
     }
 
-    @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
-    @Override
     public void mousePressed(MouseEvent e) {
-
     }
 
-    @Override
     public void mouseReleased(MouseEvent e) {
-
     }
 
-    @Override
     public void mouseEntered(MouseEvent e) {
-        for (int i = 0; i < button.length; i++) {
-            if (e.getSource() == button[i]) {
-                button[i].setBackground(Color.black);
+        int i;
+        for (i = 0; i < this.button.length; i++) {
+            if (e.getSource() == this.button[i]) {
+                this.button[i].setBackground(Color.black);
             }
         }
-        for (int i = 0; i < diffButton.length; i++) {
-            if (e.getSource() == diffButton[i]) {
-                if(i!=difficulty){
-                    diffButton[i].setForeground(Color.white);
-                    diffButton[i].setBackground(Color.black);
-                }
+        for (i = 0; i < this.diffButton.length; i++) {
+            if (e.getSource() == this.diffButton[i]
+                    && i != this.difficulty) {
+                this.diffButton[i].setForeground(Color.white);
+                this.diffButton[i].setBackground(Color.black);
             }
         }
-        if (e.getSource() == resetButton) {
-            resetButton.setBackground(Color.black);
-            resetButton.setForeground(Color.white);
+        if (e.getSource() == this.resetButton) {
+            this.resetButton.setBackground(Color.black);
+            this.resetButton.setForeground(Color.white);
         }
     }
 
-    @Override
     public void mouseExited(MouseEvent e) {
-        for (int i = 0; i < button.length; i++) {
-            if (e.getSource() == button[i]) {
-                button[i].setBackground(null);
+        int i;
+        for (i = 0; i < this.button.length; i++) {
+            if (e.getSource() == this.button[i]) {
+                this.button[i].setBackground((Color) null);
                 checkWinner();
             }
         }
-        if (e.getSource() == resetButton) {
-            resetButton.setBackground(null);
-            resetButton.setForeground(Color.black);
+        if (e.getSource() == this.resetButton) {
+            this.resetButton.setBackground((Color) null);
+            this.resetButton.setForeground(Color.black);
         }
-        for (int i = 0; i < diffButton.length; i++) {
-            if (e.getSource() == diffButton[i]) {
-                if(i!=difficulty){
-                    diffButton[i].setForeground(Color.black);
-                    diffButton[i].setBackground(null);
-                }
+        for (i = 0; i < this.diffButton.length; i++) {
+            if (e.getSource() == this.diffButton[i]
+                    && i != this.difficulty) {
+                this.diffButton[i].setForeground(Color.black);
+                this.diffButton[i].setBackground((Color) null);
             }
         }
     }
